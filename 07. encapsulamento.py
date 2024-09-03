@@ -3,6 +3,68 @@ import os
 
 os.system("clear")
 
+class SalarioNegativoError(Exception):
+    pass
+
 class Endereco:
     def __init__(self, logradouro: str, numero: str, cidade: str) -> None:
+        self.logradouro = logradouro
+        self.numero = numero
+        self.cidade = cidade
+    
+    def  __str__(self) -> str:
+        return (
+            f"\nlogradouro: {self.logradouro}"
+            f"\nnúmero: {self.numero}"
+            f"\ncidade: {self.cidade}"
+                )
+class Funcionario(ABC):
+    def __init__(self, nome: str, email: str, salario: float, endereco: Endereco) -> None:
+        try:
+            self.verificar_salario(salario)
+        except SalarioNegativoError as error:
+            return f"erro: {error}"
+            self.salario = 0
+        else:
+            self.salario = salario
+        self.nome = nome
+        self.email = email
+        self.endereco = endereco
+    
+    @abstractmethod
+    def salario_final(self) -> float:
         pass
+
+    def verificar_salario(self, valor):
+        if valor < 0:
+            raise SalarioNegativoError("valor inválido")
+
+    def __str__(self) -> str:
+        return (
+            f"\nnome: {self.nome}"
+            f"\ne-mail: {self.email}"
+            f"\nsalario: {self.salario}"
+            f"\nendereço: {self.endereco}"
+                )
+
+class Motoboy(Funcionario):
+    def __init__(self, nome: str, email: str, salario: float, cnh: str, endereco: Endereco) -> None:
+        super().__init__(nome, email, salario, endereco)
+        self.cnh = cnh
+    
+    def salario_final(self) -> float:
+        return self.salario
+    
+    def __str__(self) -> str:
+        return (f"{super().__str__()}"
+                f"\nCNH: {self.cnh}")
+
+class Gerente(Funcionario):
+    def salario_final(self) -> float:
+        return self.salario
+
+gerente_1 = Gerente("zezão", "zezão@gmail", 1400.0, Endereco("alameda rua", "123", "não sei"))
+print(gerente_1)
+
+motoboy_1 = Motoboy("james bond", "bonddotigrão@gmail.com", -1400.0, "123456", Endereco("rua alameda", "321", "sei não"))
+print(motoboy_1)

@@ -20,15 +20,10 @@ class Endereco:
                 )
 class Funcionario(ABC):
     def __init__(self, nome: str, email: str, salario: float, endereco: Endereco) -> None:
-        try:
-            self.verificar_salario(salario)
-        except SalarioNegativoError as error:
-            return f"erro: {error}"
-            self.salario = 0
-        else:
-            self.salario = salario
+        self.verificar_salario(salario)
         self.nome = nome
         self.email = email
+        self.salario = salario
         self.endereco = endereco
     
     @abstractmethod
@@ -36,6 +31,12 @@ class Funcionario(ABC):
         pass
 
     def verificar_salario(self, valor):
+        try:
+            self.mensagem(valor)
+        except SalarioNegativoError as e:
+            return f"erro: {e}"
+
+    def mensagem(self, valor):
         if valor < 0:
             raise SalarioNegativoError("valor inválido")
 
@@ -43,7 +44,7 @@ class Funcionario(ABC):
         return (
             f"\nnome: {self.nome}"
             f"\ne-mail: {self.email}"
-            f"\nsalario: {self.salario}"
+            f"\nsalário: {self.verificar_salario(self.salario)}"
             f"\nendereço: {self.endereco}"
                 )
 
@@ -61,7 +62,8 @@ class Motoboy(Funcionario):
 
 class Gerente(Funcionario):
     def salario_final(self) -> float:
-        return self.salario
+        salarioFinal = self.verificar_salario(self.salario)
+        return salarioFinal
 
 gerente_1 = Gerente("zezão", "zezão@gmail", 1400.0, Endereco("alameda rua", "123", "não sei"))
 print(gerente_1)

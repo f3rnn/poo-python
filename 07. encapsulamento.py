@@ -35,6 +35,8 @@ class Funcionario(ABC):
             self.mensagem(valor)
         except SalarioNegativoError as e:
             return f"erro: {e}"
+        else:
+            return f"R${valor}"
 
     def mensagem(self, valor):
         if valor < 0:
@@ -56,15 +58,15 @@ class Motoboy(Funcionario):
     def salario_final(self) -> float:
         return self.salario
     
+    
     def __str__(self) -> str:
         return (f"{super().__str__()}"
                 f"\nCNH: {self.cnh}")
 
 class Gerente(Funcionario):
     def salario_final(self) -> float:
-        salarioFinal = self.verificar_salario(self.salario)
-        return salarioFinal
-
+            return self.salario
+    
 gerente_1 = Gerente("zezão", "zezão@gmail", 1400.0, Endereco("alameda rua", "123", "não sei"))
 print(gerente_1)
 
